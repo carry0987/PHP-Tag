@@ -1,0 +1,21 @@
+{
+    "name": "carry0987/tag",
+    "description": "PHP Tag Management Library: A Comprehensive Toolkit for Tag Handling",
+    "type": "library",
+    "require": {
+        "php": ">=7.2"
+    },
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "carry0987\\Tag\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "carry0987"
+        }
+    ],
+    "minimum-stability": "stable",
+    "prefer-stable": true
+}
