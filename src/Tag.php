@@ -8,11 +8,13 @@ class Tag
     const TAG_STRING = 'str';
     const TAG_ARRAY = 'arr';
     const TAG_CLASSIFIED = 'classified';
+    const TAG_UNCLASSIFIED = 'unclassified';
 
     protected $tag = [
         self::TAG_STRING => null,
         self::TAG_ARRAY => [],
         self::TAG_CLASSIFIED => null,
+        self::TAG_UNCLASSIFIED => null
     ];
     protected $validTagPattern = '/^(?!\d+$)[\p{Han}a-zA-Z0-9\:\-,_\ ]+$/u';
     protected $validClassifyPattern = '/([a-z]+)\:([\p{Han}a-zA-Z0-9_\ ]+)/u';
@@ -20,8 +22,6 @@ class Tag
     public function __construct(string $value = '')
     {
         $this->tag[self::TAG_STRING] = $value;
-
-        return $this;
     }
 
     /**
@@ -83,6 +83,15 @@ class Tag
         return empty($this->tag[self::TAG_CLASSIFIED]) ? null : $this->tag[self::TAG_CLASSIFIED];
     }
 
+    public function getUnclassified(): ?array
+    {
+        if (empty($this->tag[self::TAG_UNCLASSIFIED])) {
+            $this->classifyTagGroup();
+        }
+
+        return empty($this->tag[self::TAG_UNCLASSIFIED]) ? null : $this->tag[self::TAG_UNCLASSIFIED];
+    }
+
     public function getValidTagPattern(): string
     {
         return $this->validTagPattern;
@@ -113,15 +122,16 @@ class Tag
             $this->getList();
         }
 
-        $this->tag[self::TAG_CLASSIFIED] = array();
+        $this->tag[self::TAG_CLASSIFIED] = $this->tag[self::TAG_UNCLASSIFIED] = [];
         foreach ($this->tag[self::TAG_ARRAY] as $key => $value) {
             if (strpos($value, ':') !== false) {
                 preg_match($this->validClassifyPattern, $value, $matches);
                 if (isset($matches[2])) {
-                    unset($this->tag[self::TAG_ARRAY][$key]);
                     $this->tag[self::TAG_CLASSIFIED][$matches[1]][] = self::normalizeString($matches[2]);
+                    continue;
                 }
             }
+            $this->tag[self::TAG_UNCLASSIFIED][] = $value;
         }
 
         return $this;
@@ -241,6 +251,15 @@ class Tag
         return implode(',', $tags);
     }
 
+    /**
+     * Normalizes tag names by replacing sequences of spaces or colons followed by a slash with a colon.
+     * It then delegates further normalization, such as converting to lowercase and replacing spaces with
+     * underscores, to the normalizeString method. This function is typically used to process tag names
+     * before using them for display or storage.
+     *
+     * @param string $str The tag name to be cleared and normalized.
+     * @return string The normalized tag name.
+     */
     public static function clearTagName(string $str): string
     {
         return self::normalizeString(preg_replace('/\s*([\/:])\s*/', ':', $str));

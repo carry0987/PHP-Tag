@@ -19,9 +19,12 @@ echo 'Array from String Tags: ';
 print_r($arrayFromString);
 
 // Get classified tags
-$classifiedTags = $tag->classifyTagGroup()->getClassified();
+$tag->classifyTagGroup();
+$classifiedTags = $tag->getClassified();
 echo 'Classified Tags: ';
 print_r($classifiedTags);
+echo 'Unclassified Tags: ';
+print_r($tag->getUnclassified());
 
 echo '</pre>';
 echo '<hr>';
