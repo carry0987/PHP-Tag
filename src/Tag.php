@@ -25,7 +25,6 @@ class Tag
         $this->tag[self::TAG_STRING] = $string;
     }
 
-
     public function setArray(array $array, bool $preserveOrder = true): void
     {
         if ($preserveOrder === false) {
