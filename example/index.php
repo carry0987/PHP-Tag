@@ -14,7 +14,7 @@ $string = $tag->getString();
 echo 'String Tags: ', $string, PHP_EOL;
 
 // Use getList method to convert string tags to array and remove empty values
-$arrayFromString = $tag->getList();
+$arrayFromString = $tag->getNormalizedList();
 echo 'Array from String Tags: ';
 print_r($arrayFromString);
 

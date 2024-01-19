@@ -132,7 +132,7 @@ class Tag
      *
      * @return array Array of normalized tags.
      */
-    public function getName(): array
+    public function getNormalizedList(): array
     {
         // Check if the tag array is already set, if not, then populate it from the string.
         if (!isset($this->tag[self::TAG_ARRAY]) || empty($this->tag[self::TAG_ARRAY])) {
