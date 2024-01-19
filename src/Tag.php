@@ -92,7 +92,10 @@ class Tag
      */
     public function classifyTagGroup(): array
     {
-        if (empty($this->getList())) return [];
+        // Check if the tag array is already set, if not, then populate it from the string.
+        if (!isset($this->tag[self::TAG_ARRAY]) || empty($this->tag[self::TAG_ARRAY])) {
+            $this->getList();
+        }
 
         $this->tag[self::TAG_CLASSIFIED] = array();
         foreach ($this->tag[self::TAG_ARRAY] as $key => $value) {
