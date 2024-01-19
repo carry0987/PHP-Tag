@@ -20,37 +20,37 @@ class Tag
         $this->tag[self::TAG_STRING] = $value;
     }
 
-    public function setString(string $value)
+    public function setString(string $value): void
     {
         $this->tag[self::TAG_STRING] = $value;
     }
 
-    public function setArray(array $value)
+    public function setArray(array $value): void
     {
         $this->tag[self::TAG_ARRAY] = array_unique($value);
     }
 
-    public function getString()
+    public function getString(): string|null
     {
         return $this->tag[self::TAG_STRING];
     }
 
-    public function getArray()
+    public function getArray(): array|null
     {
         return $this->tag[self::TAG_ARRAY] ?? null;
     }
 
-    public function getClassified()
+    public function getClassified(): array|null
     {
         return $this->tag[self::TAG_CLASSIFIED] ?? null;
     }
 
-    public function checkClear()
+    public function checkClear(): bool
     {
         return isset($this->tag[self::TAG_STRING]) && !preg_match('/[^\p{Han}a-zA-Z0-9\:\-,_\ ]/u', $this->tag[self::TAG_STRING]);
     }
 
-    public function classify()
+    public function classify(): array
     {
         if (!isset($this->tag[self::TAG_ARRAY])) return null;
 
@@ -71,7 +71,7 @@ class Tag
         return $this->tag[self::TAG_CLASSIFIED];
     }
 
-    public function getList()
+    public function getList(): array
     {
         if (!isset($this->tag[self::TAG_STRING])) return null;
         $this->tag[self::TAG_ARRAY] = array_filter(explode(',', $this->tag[self::TAG_STRING]), 'strlen');
@@ -79,7 +79,7 @@ class Tag
         return $this->tag[self::TAG_ARRAY];
     }
 
-    public function getName()
+    public function getName(): array
     {
         if (!isset($this->tag[self::TAG_ARRAY]) || !is_array($this->tag[self::TAG_ARRAY])) return null;
 
@@ -90,7 +90,7 @@ class Tag
         return $this->tag[self::TAG_ARRAY];
     }
 
-    public static function mergeTagID(array $arr, string $column = null)
+    public static function mergeTagID(array $arr, string $column = null): string
     {
         if ($column === null) {
             foreach ($arr as $value) {
@@ -111,19 +111,19 @@ class Tag
         return implode(',', $values);
     }
 
-    public static function sliceTagID(string $str)
+    public static function sliceTagID(string $str): array
     {
         return array_filter(array_map('intval', explode(',', $str)), function($value) {
             return $value > 0;
         });
     }
 
-    public static function checkTagExist(string $str, int $tag_id)
+    public static function checkTagExist(string $str, int $tag_id): bool
     {
         return in_array($tag_id, self::sliceTagID($str), true);
     }
 
-    public static function removeTag(string $str, int $tag_id)
+    public static function removeTag(string $str, int $tag_id): string
     {
         $tags = self::sliceTagID($str);
         $key = array_search($tag_id, $tags, true);
