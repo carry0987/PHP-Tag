@@ -118,12 +118,12 @@ class Tag
         });
     }
 
-    public function checkTagExist(string $str, int $tag_id)
+    public static function checkTagExist(string $str, int $tag_id)
     {
         return in_array($tag_id, self::sliceTagID($str), true);
     }
 
-    public function removeTag(string $str, int $tag_id)
+    public static function removeTag(string $str, int $tag_id)
     {
         $tags = self::sliceTagID($str);
         $key = array_search($tag_id, $tags, true);
@@ -134,7 +134,7 @@ class Tag
         return implode(',', $tags);
     }
 
-    public function clearTagName(string $str)
+    public static function clearTagName(string $str)
     {
         return preg_replace('/\s+/', '_', trim(strtolower($str)));
     }
