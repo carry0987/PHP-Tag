@@ -113,8 +113,11 @@ class Tag
         }
         $values = [];
         foreach ($arr as $item) {
-            if (!isset($item[$column]) || !is_scalar($item[$column])) {
+            if (!isset($item[$column])) {
                 throw new TagException("Column '{$column}' missing in array element.");
+            }
+            if (!is_scalar($item[$column])) {
+                throw new TagException("Column '{$column}' must be a scalar value.");
             }
             $values[] = $item[$column];
         }
