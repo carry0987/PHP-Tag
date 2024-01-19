@@ -64,7 +64,7 @@ class Tag
 
     public function classify(): array
     {
-        if (!isset($this->tag[self::TAG_ARRAY])) return [];
+        if (empty($this->tag[self::TAG_ARRAY])) return [];
 
         $regex = '/([a-z]+)\:([\p{Han}a-zA-Z0-9_\ ]+)/u';
         $this->tag[self::TAG_CLASSIFIED] = array();
