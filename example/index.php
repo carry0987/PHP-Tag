@@ -14,12 +14,12 @@ $string = $tag->getString();
 echo 'String Tags: ', $string, PHP_EOL;
 
 // Use getList method to convert string tags to array and remove empty values
-$arrayFromString = $tag->getNormalizedList();
+$arrayFromString = $tag->getList();
 echo 'Array from String Tags: ';
 print_r($arrayFromString);
 
 // Get classified tags
-$tag->classifyTagGroup();
+$tag->classifyTagGroup(true);
 $classifiedTags = $tag->getClassified();
 echo 'Classified Tags: ';
 print_r($classifiedTags);

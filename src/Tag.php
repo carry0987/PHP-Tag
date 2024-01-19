@@ -110,12 +110,16 @@ class Tag
     /**
      * Classify the tag array into a grouped structure based on the predefined pattern.
      * Each tag containing a colon ':' is parsed into a key-value pair where the key is the tag group.
-     * The remainder after the colon is normalized and added to the group. The original tag array is updated
-     * by removing classified tags.
+     * The remainder after the colon is added to the group, optionally normalized if specified.
+     * Tags without a colon are considered unclassified and are added separately,
+     * also with optional normalization. The original tag array is not modified.
      *
-     * @return $this Returns the current instance of the Tag class.
+     * @param bool $normalize Whether to normalize the tag names. When set to true,
+     *                        normalization replaces spaces and some other characters
+     *                        with underscores and converts to lowercase.
+     * @return self Returns the current instance of the Tag class, allowing for method chaining.
      */
-    public function classifyTagGroup(): self
+    public function classifyTagGroup(bool $normalize = false): self
     {
         // Check if the tag array is already set, if not, then populate it from the string.
         if (!isset($this->tag[self::TAG_ARRAY]) || empty($this->tag[self::TAG_ARRAY])) {
@@ -123,15 +127,17 @@ class Tag
         }
 
         $this->tag[self::TAG_CLASSIFIED] = $this->tag[self::TAG_UNCLASSIFIED] = [];
-        foreach ($this->tag[self::TAG_ARRAY] as $key => $value) {
+        foreach ($this->tag[self::TAG_ARRAY] as $value) {
             if (strpos($value, ':') !== false) {
                 preg_match($this->validClassifyPattern, $value, $matches);
                 if (isset($matches[2])) {
-                    $this->tag[self::TAG_CLASSIFIED][$matches[1]][] = self::normalizeString($matches[2]);
+                    $groupValue = $normalize ? self::clearTagName($matches[2]) : $matches[2];
+                    $this->tag[self::TAG_CLASSIFIED][$matches[1]][] = $groupValue;
                     continue;
                 }
             }
-            $this->tag[self::TAG_UNCLASSIFIED][] = $value;
+            $uncatValue = $normalize ? self::clearTagName($value) : $value;
+            $this->tag[self::TAG_UNCLASSIFIED][] = $uncatValue;
         }
 
         return $this;
@@ -166,11 +172,12 @@ class Tag
         }
 
         // Apply normalization to the array values and get unique entries.
-        $this->tag[self::TAG_ARRAY] = array_unique(array_map(function($value) {
+        $array = $this->tag[self::TAG_ARRAY];
+        $array = array_unique(array_map(function($value) {
             return self::clearTagName($value);
-        }, $this->tag[self::TAG_ARRAY]));
+        }, $array));
 
-        return $this->tag[self::TAG_ARRAY];
+        return $array;
     }
 
     /**
