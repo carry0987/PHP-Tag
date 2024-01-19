@@ -131,8 +131,12 @@ class Tag
      */
     public function getName(): array
     {
-        if (empty($this->tag[self::TAG_ARRAY])) return [];
+        // Check if the tag array is already set, if not, then populate it from the string.
+        if (!isset($this->tag[self::TAG_ARRAY]) || empty($this->tag[self::TAG_ARRAY])) {
+            $this->getList();
+        }
 
+        // Apply normalization to the array values and get unique entries.
         $this->tag[self::TAG_ARRAY] = array_unique(array_map(function($value) {
             return self::normalizeString(preg_replace('/\s*([\/:])\s*/', ':', $value));
         }, $this->tag[self::TAG_ARRAY]));
