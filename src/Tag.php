@@ -91,7 +91,7 @@ class Tag
 
     public function getName(): array
     {
-        if (!is_array($this->tag[self::TAG_ARRAY] ?? null)) return [];
+        if (empty($this->tag[self::TAG_ARRAY])) return [];
 
         $this->tag[self::TAG_ARRAY] = array_unique(array_map(function($value) {
             return self::normalizeString(preg_replace('/\s*([\/:])\s*/', ':', $value));
