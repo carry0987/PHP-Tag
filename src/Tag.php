@@ -42,17 +42,17 @@ class Tag
         $this->tag[self::TAG_ARRAY] = $uniqueArray;
     }
 
-    public function getString(): string|null
+    public function getString(): ?string
     {
         return $this->tag[self::TAG_STRING];
     }
 
-    public function getArray(): array|null
+    public function getArray(): ?array
     {
         return $this->tag[self::TAG_ARRAY] ?? null;
     }
 
-    public function getClassified(): array|null
+    public function getClassified(): ?array
     {
         return $this->tag[self::TAG_CLASSIFIED] ?? null;
     }
