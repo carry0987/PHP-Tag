@@ -20,14 +20,27 @@ class Tag
         $this->tag[self::TAG_STRING] = $value;
     }
 
-    public function setString(string $value): void
+    public function setString(string $string): void
     {
-        $this->tag[self::TAG_STRING] = $value;
+        $this->tag[self::TAG_STRING] = $string;
     }
 
-    public function setArray(array $value): void
+
+    public function setArray(array $array, bool $preserveOrder = true): void
     {
-        $this->tag[self::TAG_ARRAY] = array_unique($value);
+        if ($preserveOrder === false) {
+            $this->tag[self::TAG_ARRAY] = array_unique($array);
+            return;
+        }
+
+        $uniqueArray = [];
+        foreach ($array as $item) {
+            if (!in_array($item, $uniqueArray, true)) {
+                $uniqueArray[] = $item;
+            }
+        }
+
+        $this->tag[self::TAG_ARRAY] = $uniqueArray;
     }
 
     public function getString(): string|null
@@ -45,14 +58,14 @@ class Tag
         return $this->tag[self::TAG_CLASSIFIED] ?? null;
     }
 
-    public function checkClear(): bool
+    public function isValidTagString(): bool
     {
         return isset($this->tag[self::TAG_STRING]) && !preg_match('/[^\p{Han}a-zA-Z0-9\:\-,_\ ]/u', $this->tag[self::TAG_STRING]);
     }
 
     public function classify(): array
     {
-        if (!isset($this->tag[self::TAG_ARRAY])) return null;
+        if (!isset($this->tag[self::TAG_ARRAY])) return [];
 
         $regex = '/([a-z]+)\:([\p{Han}a-zA-Z0-9_\ ]+)/u';
         $this->tag[self::TAG_CLASSIFIED] = array();
@@ -61,7 +74,7 @@ class Tag
                 preg_match($regex, $value, $matches);
                 if (isset($matches[2])) {
                     unset($this->tag[self::TAG_ARRAY][$key]);
-                    $this->tag[self::TAG_CLASSIFIED][$matches[1]][] = $this->normalizeString($matches[2]);
+                    $this->tag[self::TAG_CLASSIFIED][$matches[1]][] = self::normalizeString($matches[2]);
                 }
             }
         }
@@ -71,7 +84,7 @@ class Tag
 
     public function getList(): array
     {
-        if (!isset($this->tag[self::TAG_STRING])) return null;
+        if (!isset($this->tag[self::TAG_STRING])) return [];
         $this->tag[self::TAG_ARRAY] = array_filter(explode(',', $this->tag[self::TAG_STRING]), 'strlen');
 
         return $this->tag[self::TAG_ARRAY];
@@ -79,10 +92,10 @@ class Tag
 
     public function getName(): array
     {
-        if (!isset($this->tag[self::TAG_ARRAY]) || !is_array($this->tag[self::TAG_ARRAY])) return null;
+        if (!is_array($this->tag[self::TAG_ARRAY] ?? null)) return [];
 
         $this->tag[self::TAG_ARRAY] = array_unique(array_map(function($value) {
-            return $this->normalizeString(preg_replace('/\s*([\/:])\s*/', ':', $value));
+            return self::normalizeString(preg_replace('/\s*([\/:])\s*/', ':', $value));
         }, $this->tag[self::TAG_ARRAY]));
 
         return $this->tag[self::TAG_ARRAY];
