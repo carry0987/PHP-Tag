@@ -145,7 +145,7 @@ class Tag
         return implode(',', $tags);
     }
 
-    public static function clearTagName(string $str)
+    public static function clearTagName(string $str): string
     {
         return preg_replace('/\s+/', '_', trim(strtolower($str)));
     }
