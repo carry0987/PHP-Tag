@@ -61,9 +61,7 @@ class Tag
                 preg_match($regex, $value, $matches);
                 if (isset($matches[2])) {
                     unset($this->tag[self::TAG_ARRAY][$key]);
-                    $matches[2] = trim(strtolower($matches[2]));
-                    $matches[2] = str_replace(' ', '_', $matches[2]);
-                    $this->tag[self::TAG_CLASSIFIED][$matches[1]][] = $matches[2];
+                    $this->tag[self::TAG_CLASSIFIED][$matches[1]][] = $this->normalizeString($matches[2]);
                 }
             }
         }
@@ -84,7 +82,7 @@ class Tag
         if (!isset($this->tag[self::TAG_ARRAY]) || !is_array($this->tag[self::TAG_ARRAY])) return null;
 
         $this->tag[self::TAG_ARRAY] = array_unique(array_map(function($value) {
-            return preg_replace('/\s+/', '_', trim(strtolower(preg_replace('/\s*([\/:])\s*/', ':', $value))));
+            return $this->normalizeString(preg_replace('/\s*([\/:])\s*/', ':', $value));
         }, $this->tag[self::TAG_ARRAY]));
 
         return $this->tag[self::TAG_ARRAY];
@@ -93,9 +91,10 @@ class Tag
     public static function mergeTagID(array $arr, string $column = null): string
     {
         if ($column === null) {
+            $arr = array_filter($arr, 'is_scalar');
             foreach ($arr as $value) {
-                if (!is_scalar($value)) {
-                    throw new TagException('Elements must be scalar values when no column is specified.');
+                if ($value === false) {
+                    throw new TagException('Boolean false cannot be converted to a string');
                 }
             }
             return implode(',', $arr);
@@ -137,5 +136,16 @@ class Tag
     public static function clearTagName(string $str)
     {
         return preg_replace('/\s+/', '_', trim(strtolower($str)));
+    }
+
+    /**
+     * Normalize string, convert to lowercase and replace spaces with underscores
+     *
+     * @param string $str String to normalize
+     * @return string Normalized string
+     */
+    protected static function normalizeString($str): string
+    {
+        return str_replace(' ', '_', strtolower(trim($str)));
     }
 }
