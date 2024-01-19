@@ -25,13 +25,13 @@ echo 'Cleared Tag Name: ' . $clearTagName . PHP_EOL;
 
 // Let's say we have an array of tag IDs
 $tagsArray = [
-    ['id' => 1],
-    ['id' => 2],
-    ['id' => 3]
+    ['id' => 1, 'name' => 'music'],
+    ['id' => 2, 'name' => 'art'],
+    ['id' => 3, 'name' => 'travel']
 ];
 
 // Merge tag IDs to a string
-$mergedTagIds = $tag->mergeTagID($tagsArray);
+$mergedTagIds = $tag->mergeTagID($tagsArray, 'id');
 echo 'Merged Tag IDs: ' . $mergedTagIds . PHP_EOL;
 
 // Split tag IDs to array based on string

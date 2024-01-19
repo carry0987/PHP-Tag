@@ -91,9 +91,21 @@ class Tag
         return $this->tag[self::TAG_ARRAY];
     }
 
-    public function mergeTagID(array $arr)
+    public function mergeTagID(array $arr, string $column = null): string
     {
-        return implode(',', array_column($arr, 'id'));
+        if ($column === null && isset($arr[0]) && is_numeric($arr[0])) {
+            return implode(',', $arr);
+        }
+        $values = [];
+        foreach ($arr as $item) {
+            if ($column !== null && isset($item[$column])) {
+                $values[] = $item[$column];
+            } elseif ($column === null) {
+                $values[] = $item;
+            }
+        }
+
+        return implode(',', $values);
     }
 
     public function sliceTagID(string $str)
