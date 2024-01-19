@@ -102,11 +102,10 @@ class Tag
         }
         $values = [];
         foreach ($arr as $item) {
-            if (isset($item[$column])) {
-                $values[] = $item[$column];
-            } else {
+            if (!isset($item[$column])) {
                 throw new TagException("Column '{$column}' missing in array element.");
             }
+            $values[] = $item[$column];
         }
 
         return implode(',', $values);
