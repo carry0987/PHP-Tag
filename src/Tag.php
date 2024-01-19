@@ -90,7 +90,7 @@ class Tag
         return $this->tag[self::TAG_ARRAY];
     }
 
-    public function mergeTagID(array $arr, string $column = null)
+    public static function mergeTagID(array $arr, string $column = null)
     {
         if ($column === null) {
             foreach ($arr as $value) {
@@ -111,7 +111,7 @@ class Tag
         return implode(',', $values);
     }
 
-    public function sliceTagID(string $str)
+    public static function sliceTagID(string $str)
     {
         return array_filter(array_map('intval', explode(',', $str)), function($value) {
             return $value > 0;
@@ -120,12 +120,12 @@ class Tag
 
     public function checkTagExist(string $str, int $tag_id)
     {
-        return in_array($tag_id, $this->sliceTagID($str), true);
+        return in_array($tag_id, self::sliceTagID($str), true);
     }
 
     public function removeTag(string $str, int $tag_id)
     {
-        $tags = $this->sliceTagID($str);
+        $tags = self::sliceTagID($str);
         $key = array_search($tag_id, $tags, true);
         if ($key !== false) {
             unset($tags[$key]);
