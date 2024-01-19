@@ -1,8 +1,7 @@
 <?php
-/**
- *  Tag class
- */
 namespace carry0987\Tag;
+
+use carry0987\Tag\Exceptions\TagException;
 
 class Tag
 {
@@ -91,17 +90,22 @@ class Tag
         return $this->tag[self::TAG_ARRAY];
     }
 
-    public function mergeTagID(array $arr, string $column = null): string
+    public function mergeTagID(array $arr, string $column = null)
     {
-        if ($column === null && isset($arr[0]) && is_numeric($arr[0])) {
+        if ($column === null) {
+            foreach ($arr as $value) {
+                if (!is_scalar($value)) {
+                    throw new TagException('Elements must be scalar values when no column is specified.');
+                }
+            }
             return implode(',', $arr);
         }
         $values = [];
         foreach ($arr as $item) {
-            if ($column !== null && isset($item[$column])) {
+            if (isset($item[$column])) {
                 $values[] = $item[$column];
-            } elseif ($column === null) {
-                $values[] = $item;
+            } else {
+                throw new TagException("Column '{$column}' missing in array element.");
             }
         }
 
