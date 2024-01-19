@@ -20,36 +20,48 @@ class Tag
     public function __construct(string $value = '')
     {
         $this->tag[self::TAG_STRING] = $value;
+
+        return $this;
     }
 
     /**
      * Set regular expression pattern for validating tags.
      *
      * @param string|null $pattern Regular expression pattern
+     * @return $this Returns the current instance of the Tag class.
      */
-    public function setValidTagFormat(?string $pattern): void
+    public function setValidTagFormat(?string $pattern): self
     {
         $this->validTagPattern = $pattern;
+
+        return $this;
     }
 
     /**
      * Set regular expression pattern for validating classified tags.
      *
      * @param string|null $pattern Regular expression pattern
+     * @return $this Returns the current instance of the Tag class.
      */
-    public function setValidClassifyPattern(?string $pattern): void
+    public function setValidClassifyPattern(?string $pattern): self
     {
         $this->validClassifyPattern = $pattern;
+
+        return $this;
     }
 
-    public function setString(string $string): void
+    public function setString(string $string): self
     {
         $this->tag[self::TAG_STRING] = $string;
+
+        return $this;
     }
 
-    public function setArray(array $array): void
+    public function setArray(array $array): self
     {
         $this->tag[self::TAG_ARRAY] = array_unique($array);
+
+        return $this;
     }
 
     public function getString(): ?string
@@ -64,15 +76,19 @@ class Tag
 
     public function getClassified(): ?array
     {
-        return $this->tag[self::TAG_CLASSIFIED] ?? null;
+        if (empty($this->tag[self::TAG_CLASSIFIED])) {
+            $this->classifyTagGroup();
+        }
+
+        return empty($this->tag[self::TAG_CLASSIFIED]) ? null : $this->tag[self::TAG_CLASSIFIED];
     }
 
-    public function getValidTagPattern(): ?string
+    public function getValidTagPattern(): string
     {
         return $this->validTagPattern;
     }
 
-    public function getValidClassifyPattern(): ?string
+    public function getValidClassifyPattern(): string
     {
         return $this->validClassifyPattern;
     }
@@ -88,9 +104,9 @@ class Tag
      * The remainder after the colon is normalized and added to the group. The original tag array is updated
      * by removing classified tags.
      *
-     * @return array Classified tags grouped by their prefix.
+     * @return $this Returns the current instance of the Tag class.
      */
-    public function classifyTagGroup(): array
+    public function classifyTagGroup(): self
     {
         // Check if the tag array is already set, if not, then populate it from the string.
         if (!isset($this->tag[self::TAG_ARRAY]) || empty($this->tag[self::TAG_ARRAY])) {
@@ -108,7 +124,7 @@ class Tag
             }
         }
 
-        return $this->tag[self::TAG_CLASSIFIED];
+        return $this;
     }
 
     /**
@@ -141,7 +157,7 @@ class Tag
 
         // Apply normalization to the array values and get unique entries.
         $this->tag[self::TAG_ARRAY] = array_unique(array_map(function($value) {
-            return self::normalizeString(preg_replace('/\s*([\/:])\s*/', ':', $value));
+            return self::clearTagName($value);
         }, $this->tag[self::TAG_ARRAY]));
 
         return $this->tag[self::TAG_ARRAY];
@@ -227,7 +243,7 @@ class Tag
 
     public static function clearTagName(string $str): string
     {
-        return preg_replace('/\s+/', '_', trim(strtolower($str)));
+        return self::normalizeString(preg_replace('/\s*([\/:])\s*/', ':', $str));
     }
 
     /**

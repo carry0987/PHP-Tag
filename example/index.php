@@ -19,8 +19,7 @@ echo 'Array from String Tags: ';
 print_r($arrayFromString);
 
 // Get classified tags
-$tag->classifyTagGroup();
-$classifiedTags = $tag->getClassified();
+$classifiedTags = $tag->classifyTagGroup()->getClassified();
 echo 'Classified Tags: ';
 print_r($classifiedTags);
 
