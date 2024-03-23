@@ -149,13 +149,15 @@ class Tag
     /**
      * Explode the string tag into an array, filter out any empty strings.
      * This method helps to prepare the tag string for further classification or manipulation.
+     * 
+     * @param string $separator Separator used in the string.
      *
      * @return array Array of non-empty tags extracted from the string.
      */
-    public function getList(): array
+    public function getList(string $separator = ','): array
     {
         if (!isset($this->tag[self::TAG_STRING])) return [];
-        $this->tag[self::TAG_ARRAY] = array_filter(explode(',', $this->tag[self::TAG_STRING]), 'strlen');
+        $this->tag[self::TAG_ARRAY] = array_filter(explode($separator, $this->tag[self::TAG_STRING]), 'strlen');
 
         return $this->tag[self::TAG_ARRAY];
     }
@@ -189,12 +191,13 @@ class Tag
      *
      * @param array $arr Array of tags or multi-dimensional array from which to extract the tags.
      * @param string|null $column Optional name of the column whose values are to be merged.
+     * @param string $separator Separator used in the string.
      * 
      * @return string Resulting comma-separated string of tag IDs.
      * 
      * @throws TagException If an element is a boolean false or if the specified column is missing or non-scalar.
      */
-    public static function mergeTagID(array $arr, string $column = null): string
+    public static function mergeTagID(array $arr, string $column = null, string $separator = ','): string
     {
         if ($column === null) {
             $arr = array_filter($arr, 'is_scalar');
@@ -203,7 +206,7 @@ class Tag
                     throw new TagException('Boolean false cannot be converted to a string');
                 }
             }
-            return implode(',', $arr);
+            return implode($separator, $arr);
         }
         $values = [];
         foreach ($arr as $item) {
@@ -216,7 +219,7 @@ class Tag
             $values[] = $item[$column];
         }
 
-        return implode(',', $values);
+        return implode($separator, $values);
     }
 
     /**
@@ -224,12 +227,13 @@ class Tag
      * Filters out any non-positive integers (e.g. zero or negative).
      *
      * @param string $str Comma-separated string of tag IDs.
+     * @param string $separator Separator used in the string.
      * 
      * @return array Array of positive integer tags.
      */
-    public static function sliceTagID(string $str): array
+    public static function sliceTagID(string $str, string $separator = ','): array
     {
-        return array_filter(array_map('intval', explode(',', $str)), function($value) {
+        return array_filter(array_map('intval', explode($separator, $str)), function($value) {
             return $value > 0;
         });
     }
@@ -239,12 +243,13 @@ class Tag
      *
      * @param string $str Comma-separated string of tag IDs to search.
      * @param int $tag_id Tag ID to check for existence.
+     * @param string $separator Separator used in the string.
      * 
      * @return bool True if tag ID exists, false otherwise.
      */
-    public static function checkTagExist(string $str, int $tag_id): bool
+    public static function checkTagExist(string $str, int $tag_id, string $separator = ','): bool
     {
-        return in_array($tag_id, self::sliceTagID($str), true);
+        return in_array($tag_id, self::sliceTagID($str, $separator), true);
     }
 
     /**
@@ -252,10 +257,11 @@ class Tag
      *
      * @param string $str Comma-separated string of tag IDs.
      * @param int $tag_id Tag ID to remove from the string.
+     * @param string $separator Separator used in the string.
      * 
      * @return string Updated string with the specific tag ID removed.
      */
-    public static function removeTag(string $str, int $tag_id): string
+    public static function removeTag(string $str, int $tag_id, string $separator = ','): string
     {
         $tags = self::sliceTagID($str);
         $key = array_search($tag_id, $tags, true);
@@ -263,7 +269,7 @@ class Tag
             unset($tags[$key]);
         }
 
-        return implode(',', $tags);
+        return implode($separator, $tags);
     }
 
     /**
