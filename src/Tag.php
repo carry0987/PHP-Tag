@@ -197,7 +197,7 @@ class Tag
      * 
      * @throws TagException If an element is a boolean false or if the specified column is missing or non-scalar.
      */
-    public static function mergeTagID(array $arr, string $column = null, string $separator = ','): string
+    public static function mergeTag(array $arr, string $column = null, string $separator = ','): string
     {
         if ($column === null) {
             $arr = array_filter($arr, 'is_scalar');
@@ -223,6 +223,20 @@ class Tag
     }
 
     /**
+     * Slice a comma-separated string of tags into an array of strings.
+     * Filters out any empty strings.
+     *
+     * @param string $str Comma-separated string of tags.
+     * @param string $separator Separator used in the string.
+     * 
+     * @return array Array of tags.
+     */
+    public static function sliceTag(string $str, string $separator = ','): array
+    {
+        return array_filter(array_map('trim', explode($separator, $str)));
+    }
+
+    /**
      * Slice a comma-separated string of tag IDs into an array of integers.
      * Filters out any non-positive integers (e.g. zero or negative).
      *
@@ -239,6 +253,20 @@ class Tag
     }
 
     /**
+     * Check whether a tag exists within a comma-separated string of tags.
+     *
+     * @param string $str Comma-separated string of tags to search.
+     * @param string $tag Tag to check for existence.
+     * @param string $separator Separator used in the string.
+     * 
+     * @return bool True if tag exists, false otherwise.
+     */
+    public static function checkTagExist(string $str, string $tag, string $separator = ','): bool
+    {
+        return in_array($tag, self::sliceTag($str, $separator), true);
+    }
+
+    /**
      * Check whether a tag ID exists within a comma-separated string of tag IDs.
      *
      * @param string $str Comma-separated string of tag IDs to search.
@@ -247,9 +275,29 @@ class Tag
      * 
      * @return bool True if tag ID exists, false otherwise.
      */
-    public static function checkTagExist(string $str, int $tag_id, string $separator = ','): bool
+    public static function checkTagIDExist(string $str, int $tag_id, string $separator = ','): bool
     {
         return in_array($tag_id, self::sliceTagID($str, $separator), true);
+    }
+
+    /**
+     * Add a tag to a comma-separated string of tags and return the updated string.
+     *
+     * @param string $str Comma-separated string of tags.
+     * @param string $tag Tag to add to the string.
+     * @param string $separator Separator used in the string.
+     * 
+     * @return string Updated string with the tag added.
+     */
+    public static function removeTag(string $str, string $tag, string $separator = ','): string
+    {
+        $tags = self::sliceTag($str, $separator);
+        $key = array_search($tag, $tags, true);
+        if ($key !== false) {
+            unset($tags[$key]);
+        }
+
+        return implode($separator, $tags);
     }
 
     /**
@@ -261,7 +309,7 @@ class Tag
      * 
      * @return string Updated string with the specific tag ID removed.
      */
-    public static function removeTag(string $str, int $tag_id, string $separator = ','): string
+    public static function removeTagID(string $str, int $tag_id, string $separator = ','): string
     {
         $tags = self::sliceTagID($str);
         $key = array_search($tag_id, $tags, true);

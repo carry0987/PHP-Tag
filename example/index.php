@@ -51,7 +51,7 @@ echo 'Original Tag IDs: ';
 print_r($tagsArray);
 
 // Merge tag IDs to a string
-$mergedTagIds = Tag::mergeTagID($tagsArray, 'id');
+$mergedTagIds = Tag::mergeTag($tagsArray, 'id');
 echo 'Merged Tag IDs: ', $mergedTagIds, PHP_EOL;
 
 // Split tag IDs to array based on string
