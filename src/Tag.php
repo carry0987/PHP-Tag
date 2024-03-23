@@ -402,6 +402,6 @@ class Tag
      */
     protected static function normalizeString($str): string
     {
-        return str_replace(' ', '_', strtolower(trim($str)));
+        return preg_replace('/\s+/', '_', strtolower(trim($str)));
     }
 }
