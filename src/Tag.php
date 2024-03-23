@@ -28,6 +28,7 @@ class Tag
      * Set regular expression pattern for validating tags.
      *
      * @param string|null $pattern Regular expression pattern
+     * 
      * @return $this Returns the current instance of the Tag class.
      */
     public function setValidTagFormat(?string $pattern): self
@@ -41,6 +42,7 @@ class Tag
      * Set regular expression pattern for validating classified tags.
      *
      * @param string|null $pattern Regular expression pattern
+     * 
      * @return $this Returns the current instance of the Tag class.
      */
     public function setValidClassifyPattern(?string $pattern): self
@@ -117,6 +119,7 @@ class Tag
      * @param bool $normalize Whether to normalize the tag names. When set to true,
      *                        normalization replaces spaces and some other characters
      *                        with underscores and converts to lowercase.
+     * 
      * @return self Returns the current instance of the Tag class, allowing for method chaining.
      */
     public function classifyTagGroup(bool $normalize = false): self
@@ -186,7 +189,9 @@ class Tag
      *
      * @param array $arr Array of tags or multi-dimensional array from which to extract the tags.
      * @param string|null $column Optional name of the column whose values are to be merged.
+     * 
      * @return string Resulting comma-separated string of tag IDs.
+     * 
      * @throws TagException If an element is a boolean false or if the specified column is missing or non-scalar.
      */
     public static function mergeTagID(array $arr, string $column = null): string
@@ -219,6 +224,7 @@ class Tag
      * Filters out any non-positive integers (e.g. zero or negative).
      *
      * @param string $str Comma-separated string of tag IDs.
+     * 
      * @return array Array of positive integer tags.
      */
     public static function sliceTagID(string $str): array
@@ -233,6 +239,7 @@ class Tag
      *
      * @param string $str Comma-separated string of tag IDs to search.
      * @param int $tag_id Tag ID to check for existence.
+     * 
      * @return bool True if tag ID exists, false otherwise.
      */
     public static function checkTagExist(string $str, int $tag_id): bool
@@ -245,6 +252,7 @@ class Tag
      *
      * @param string $str Comma-separated string of tag IDs.
      * @param int $tag_id Tag ID to remove from the string.
+     * 
      * @return string Updated string with the specific tag ID removed.
      */
     public static function removeTag(string $str, int $tag_id): string
@@ -265,6 +273,7 @@ class Tag
      * before using them for display or storage.
      *
      * @param string $str The tag name to be cleared and normalized.
+     * 
      * @return string The normalized tag name.
      */
     public static function clearTagName(string $str): string
@@ -277,6 +286,7 @@ class Tag
      * and replacing spaces with underscores. Typically used to process tag names.
      *
      * @param string $str String to be cleared and normalized.
+     * 
      * @return string Normalized string.
      */
     protected static function normalizeString($str): string
