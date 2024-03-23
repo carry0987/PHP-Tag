@@ -234,7 +234,7 @@ class Tag
      * 
      * @throws TagException If an element is not a positive integer or if the specified column is missing or non-integer.
      */
-    public function mergeTagID(array $arr, string $column = null, string $separator = ','): string
+    public static function mergeTagID(array $arr, string $column = null, string $separator = ','): string
     {
         return self::mergeTag($arr, $column, $separator);
     }
@@ -332,6 +332,46 @@ class Tag
         $key = array_search($tag_id, $tags, true);
         if ($key !== false) {
             unset($tags[$key]);
+        }
+
+        return implode($separator, $tags);
+    }
+
+    /**
+     * Add a tag to a comma-separated string of tags if it does not already exist,
+     * and return the updated string.
+     *
+     * @param string $str Comma-separated string of tags.
+     * @param string $tag Tag to add to the string.
+     * @param string $separator Separator used in the string.
+     * 
+     * @return string Updated string with the new tag added, if it was not already present.
+     */
+    public static function addTag(string $str, string $tag, string $separator = ','): string
+    {
+        $tags = self::sliceTag($str, $separator);
+        if (!self::checkTagExist($str, $tag, $separator)) {
+            $tags[] = $tag;
+        }
+
+        return implode($separator, $tags);
+    }
+
+    /**
+     * Add a tag ID to a comma-separated string of tag IDs if it does not already exist,
+     * and return the updated string.
+     *
+     * @param string $str Comma-separated string of tag IDs.
+     * @param int $tag_id Tag ID to add to the string.
+     * @param string $separator Separator used in the string.
+     * 
+     * @return string Updated string with the new tag ID added, if it was not already present.
+     */
+    public static function addTagID(string $str, int $tag_id, string $separator = ','): string
+    {
+        $tags = self::sliceTagID($str, $separator);
+        if (!self::checkTagIDExist($str, $tag_id, $separator)) {
+            $tags[] = $tag_id;
         }
 
         return implode($separator, $tags);
