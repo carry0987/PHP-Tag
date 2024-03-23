@@ -223,6 +223,23 @@ class Tag
     }
 
     /**
+     * Merge an array of tag IDs into a comma-separated string. If a column name is provided, only the values
+     * from that column are merged. Validates the elements to ensure they are positive integers.
+     *
+     * @param array $arr Array of tag IDs or multi-dimensional array from which to extract the tag IDs.
+     * @param string|null $column Optional name of the column whose values are to be merged.
+     * @param string $separator Separator used in the string.
+     * 
+     * @return string Resulting comma-separated string of tag IDs.
+     * 
+     * @throws TagException If an element is not a positive integer or if the specified column is missing or non-integer.
+     */
+    public function mergeTagID(array $arr, string $column = null, string $separator = ','): string
+    {
+        return self::mergeTag($arr, $column, $separator);
+    }
+
+    /**
      * Slice a comma-separated string of tags into an array of strings.
      * Filters out any empty strings.
      *
