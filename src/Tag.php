@@ -193,7 +193,7 @@ class Tag
      * @param string|null $column Optional name of the column whose values are to be merged.
      * @param string $separator Separator used in the string.
      * 
-     * @return string Resulting comma-separated string of tag IDs.
+     * @return string Resulting comma-separated string of tags.
      * 
      * @throws TagException If an element is a boolean false or if the specified column is missing or non-scalar.
      */
