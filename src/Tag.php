@@ -71,27 +71,27 @@ class Tag
         return $this->tag[self::TAG_STRING];
     }
 
-    public function getArray(): ?array
+    public function getArray(): array
     {
-        return $this->tag[self::TAG_ARRAY] ?? null;
+        return $this->tag[self::TAG_ARRAY] ?? [];
     }
 
-    public function getClassified(): ?array
+    public function getClassified(): array
     {
         if (empty($this->tag[self::TAG_CLASSIFIED])) {
             $this->classifyTagGroup();
         }
 
-        return empty($this->tag[self::TAG_CLASSIFIED]) ? null : $this->tag[self::TAG_CLASSIFIED];
+        return empty($this->tag[self::TAG_CLASSIFIED]) ? [] : $this->tag[self::TAG_CLASSIFIED];
     }
 
-    public function getUnclassified(): ?array
+    public function getUnclassified(): array
     {
         if (empty($this->tag[self::TAG_UNCLASSIFIED])) {
             $this->classifyTagGroup();
         }
 
-        return empty($this->tag[self::TAG_UNCLASSIFIED]) ? null : $this->tag[self::TAG_UNCLASSIFIED];
+        return empty($this->tag[self::TAG_UNCLASSIFIED]) ? [] : $this->tag[self::TAG_UNCLASSIFIED];
     }
 
     public function getValidTagPattern(): string
